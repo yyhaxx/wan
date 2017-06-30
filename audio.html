@@ -21,15 +21,18 @@
 			let frequency = frequencyArr[start];
 			if (!frequency) {
 				direction *= (-1);
-				start += 2;
+				console.log(direction)
+				start += 2 * direction;
+				console.log(start)
 				frequency = frequencyArr[start];
 			}
-			start += 1;
+			start += direction;
 			let oscillator = audioCtx.createOscillator();
 			let gainNode = audioCtx.createGain();
 			oscillator.connect(gainNode);
 			gainNode.connect(audioCtx.destination);
 			oscillator.type = 'sine';
+			console.log(frequency)
 			oscillator.frequency.value = frequency;
 			gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
 			gainNode.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 0.01);
