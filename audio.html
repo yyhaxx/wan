@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>声音demo</title>
+</head>
+<body>
+	<button id="button">经过我</button>
+	<script>
+	window.AudioContext = window.AudioContext || window.webkitAudioContext;
+	(() => {
+		if (!window.AudioContext) {
+			alert('当前浏览器不支持Web Audio API')
+			return
+		}
+		let btn = document.getElementById('button');
+		let audioCtx = new AudioContext();
+		let frequencyArr = [196.00, 220.00, 246.94, 261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50];
+		let [start, direction] = [0, 1];
+		btn.addEventListener('mouseenter', () => {
+			let frequency = frequencyArr[start];
+			if (!frequency) {
+				direction *= (-1);
+				start += 2;
+				frequency = frequencyArr[start];
+			}
+			start += 1;
+			let oscillator = audioCtx.createOscillator();
+			let gainNode = audioCtx.createGain();
+			oscillator.connect(gainNode);
+			gainNode.connect(audioCtx.destination);
+			oscillator.type = 'sine';
+			oscillator.frequency.value = frequency;
+			gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+			gainNode.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 0.01);
+			oscillator.start(audioCtx.currentTime);
+			gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1)
+			oscillator.stop(audioCtx.currentTime + 1);
+		})
+	})()
+	</script>
+</body>
+</html>
